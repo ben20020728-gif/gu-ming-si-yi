@@ -1,0 +1,1 @@
+{"name":"股名思義 Stock Quiz","short_name":"股名思義","description":"台灣股票代碼四選一測驗","lang":"zh-Hant","start_url":"./","scope":"./","display":"standalone","background_color":"#f8fbff","theme_color":"#10294d","icons":[{"src":"icon.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]}
