@@ -1,34 +1,40 @@
 
 import json
+import urllib.parse
 import urllib.request
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
-sources = {
-    "TWSE": "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL",
-    "OTC": "https://www.tpex.org.tw/www/zh-tw/afterTrading/otc?response=json",
-}
+base = "https://www.tpex.org.tw/www/zh-tw/afterTrading/otc"
 
-for market, url in sources.items():
-    print(f"\n=== {market} ===")
+today = datetime.now(ZoneInfo("Asia/Taipei")).date()
+
+def test(date):
+    params = urllib.parse.urlencode({
+        "date": date.strftime("%Y/%m/%d"),
+        "response": "json",
+    })
+    url = base + "?" + params
+
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "Mozilla/5.0"}
+    )
+
     try:
-        req = urllib.request.Request(
-            url,
-            headers={"User-Agent": "Mozilla/5.0"}
-        )
         with urllib.request.urlopen(req, timeout=30) as response:
-            data = json.load(response)
+            result = json.load(response)
 
-        print("資料型態：", type(data).__name__)
+        print("查詢日期：", date)
+        print("回傳日期：", result.get("date"))
 
-        if isinstance(data, list):
-            print("筆數：", len(data))
-            print("第一筆：", data[0] if data else "空")
-        elif isinstance(data, dict):
-            print("欄位：", list(data.keys()))
-            for key, value in data.items():
-                if isinstance(value, list):
-                    print(f"{key} 筆數：", len(value))
-                    if value:
-                        print("第一筆：", value[0])
-                    break
+        for table in result.get("tables", []):
+            print("資料表：", table.get("title"))
+            print("筆數：", len(table.get("data", [])))
+            if table.get("data"):
+                print("第一筆：", table["data"][0])
     except Exception as e:
-        print("測試失敗：", str(e))
+        print("查詢失敗：", str(e))
+
+for days_ago in (1, 2, 3, 7):
+    test(today - timedelta(days=days_ago))
