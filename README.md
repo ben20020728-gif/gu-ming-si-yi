@@ -1,1 +1,0 @@
-# gu-ming-si-yi
