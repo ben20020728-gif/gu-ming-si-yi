@@ -1,0 +1,15 @@
+
+name: Test Market Data
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test official market APIs
+        run: python test_market_data.py
